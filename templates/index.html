@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ profile.name }} | Portfolio</title>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    
+    <style>
+        /* --- AMAZING CSS VARIABLES --- */
+        :root {
+            --bg: #0a0a0a;
+            --glass: rgba(255, 255, 255, 0.05);
+            --border: rgba(255, 255, 255, 0.1);
+            --primary: #00f2ff; /* Cyberpunk Cyan */
+            --secondary: #ff0055; /* Neon Pink */
+            --text: #ffffff;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+        }
+
+        /* --- PARTICLES BACKGROUND --- */
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at center, #1a1a2e 0%, #000000 100%);
+        }
+
+        /* --- LAYOUT --- */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            flex-direction: column;
+        }
+
+        .profile-img {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            border: 4px solid var(--primary);
+            box-shadow: 0 0 30px var(--primary);
+            object-fit: cover;
+            margin-bottom: 20px;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        h1 { font-size: 3.5rem; margin: 10px 0; background: linear-gradient(to right, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .subtitle { font-size: 1.5rem; color: #aaa; margin-bottom: 30px; }
+
+        /* --- GLASS CARDS --- */
+        .section-title { font-size: 2.5rem; text-align: center; margin: 80px 0 40px; text-transform: uppercase; letter-spacing: 2px; }
+        
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        
+        .card {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            padding: 30px;
+            border-radius: 20px;
+            transition: 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: 0.5s;
+        }
+        
+        .card:hover::before { left: 100%; }
+        .card:hover { transform: translateY(-10px); box-shadow: 0 10px 30px rgba(0, 242, 255, 0.2); }
+
+        h3 { color: var(--primary); margin-top: 0; }
+        .tech-stack { font-size: 0.9rem; color: var(--secondary); font-weight: bold; margin-top: 10px; display: block;}
+
+        /* --- SKILLS PILLS --- */
+        .skill-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; }
+        .skill-pill {
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid var(--primary);
+            border-radius: 50px;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+        .skill-pill:hover { background: var(--primary); color: #000; box-shadow: 0 0 20px var(--primary); }
+
+        /* --- ADMIN LINK --- */
+        .admin-btn { position: fixed; bottom: 20px; right: 20px; opacity: 0.3; color: white; transition: 0.3s; }
+        .admin-btn:hover { opacity: 1; }
+
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-20px); } 100% { transform: translateY(0px); } }
+    </style>
+</head>
+<body>
+
+    <div id="particles-js"></div>
+
+    <div class="container">
+        <section class="hero">
+            <img src="{{ url_for('static', filename='profile.jpg') }}" alt="Profile" class="profile-img">
+            <h1>{{ profile.name }}</h1>
+            <div class="subtitle">I am a <span id="typed"></span></div>
+            <p style="max-width: 600px; line-height: 1.6;">{{ profile.about }}</p>
+            <div style="margin-top: 30px;">
+                <a href="{{ profile.linkedin }}" class="skill-pill" target="_blank">LinkedIn</a>
+                <a href="mailto:{{ profile.email }}" class="skill-pill">Email Me</a>
+            </div>
+        </section>
+
+        <h2 class="section-title" data-aos="fade-up">Technical Arsenal</h2>
+        <div class="skill-container" data-aos="zoom-in">
+            {% for skill in skills %}
+            <span class="skill-pill">{{ skill.name }}</span>
+            {% endfor %}
+        </div>
+
+        <h2 class="section-title" data-aos="fade-up">Featured Projects</h2>
+        <div class="grid">
+            {% for project in projects %}
+            <div class="card" data-tilt data-tilt-glare data-tilt-max-glare="0.5" data-aos="fade-up" data-aos-delay="100">
+                <h3>{{ project.title }}</h3>
+                <p>{{ project.description }}</p>
+                <span class="tech-stack">{{ project.stack }}</span>
+            </div>
+            {% endfor %}
+        </div>
+
+        <h2 class="section-title" data-aos="fade-up">Journey</h2>
+        <div class="card" data-aos="fade-right">
+            <h3>Education</h3>
+            <p><strong>B.Tech</strong> | MITS Gwalior (2021-2025) | CGPA: 7.41</p>
+            <p><strong>Class XII</strong> | JNV Ujjain (2020) | 77%</p>
+        </div>
+        <br>
+        <div class="card" data-aos="fade-left">
+            <h3>Achievements</h3>
+            <p>Ranked 252/4000+ in Amazon ML Challenge 2023</p>
+            <p>Top 2% in JEE Mains 2021</p>
+            <p>NCC 'C' Certificate Holder</p>
+        </div>
+        
+        <br><br><br>
+        <center><p>© 2026 Nikhilesh Mewara. Built with Python & Flask.</p></center>
+    </div>
+
+    <a href="/login" class="admin-btn">Admin</a>
+
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://unpkg.com/typed.js@2.0.16/dist/typed.umd.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.0/vanilla-tilt.min.js"></script>
+
+    <script>
+        // Init AOS
+        AOS.init({ duration: 1000, once: true });
+
+        // Init Typed.js
+        new Typed('#typed', {
+            strings: ['Data Scientist', 'Python Developer', 'AI Enthusiast', 'Problem Solver'],
+            typeSpeed: 50,
+            backSpeed: 30,
+            loop: true
+        });
+
+        // Init Particles
+        particlesJS("particles-js", {
+            "particles": {
+                "number": { "value": 80 },
+                "color": { "value": "#00f2ff" },
+                "shape": { "type": "circle" },
+                "opacity": { "value": 0.5 },
+                "size": { "value": 3 },
+                "line_linked": { "enable": true, "distance": 150, "color": "#ffffff", "opacity": 0.2, "width": 1 },
+                "move": { "enable": true, "speed": 4 }
+            },
+            "interactivity": {
+                "detect_on": "canvas",
+                "events": { "onhover": { "enable": true, "mode": "repulse" } }
+            }
+        });
+    </script>
+</body>
+</html>
